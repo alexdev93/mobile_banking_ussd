@@ -35,12 +35,12 @@ CREATE TABLE account (
 );
 
 CREATE TABLE transaction (
-    rrn INT,
-    transactioncode VARCHAR(20),
+    rrn INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_code VARCHAR(20),
     account_number VARCHAR(20),
     transaction_type VARCHAR(20),
     amount DECIMAL(15, 2),
-    responsecode VARCHAR(10),
-    transactiondate TIMESTAMP,
+    response_code VARCHAR(10),
+    transaction_date TIMESTAMP,
     FOREIGN KEY (account_number) REFERENCES account(account_number)
 );
