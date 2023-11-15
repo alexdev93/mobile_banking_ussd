@@ -17,34 +17,28 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
-    private TransactionRepository transactionReository;
+    private TransactionRepository transactionRepository;
     @Autowired
     private AccountService accountService;
 
-    public boolean deposit(Integer accountNumber, Double amount) {
+    public Account deposit(Integer accountNumber, Double amount) {
         Account optionalAccount = accountService.getAccountByAccountNumber(accountNumber);
         if (optionalAccount != null) {
             try{
                 Account account = optionalAccount;
-        Transaction transaction = new Transaction(123456789, 52L, account, "deposit", amount);
-                LocalTime time = LocalTime.now();
                 Double currentBalance = account.getBalance();
                 Double updatedBalance = currentBalance + amount;
                 account.setBalance(updatedBalance);
-                transaction.setTransactionDate(time);
-                transaction.setTransactionDate(time);
                 accountRepository.save(account);
-                transaction.setResponseCode("accept");
-                transactionReository.save(transaction);
-                return true;
+                return account;
             }catch (Exception e){
                 throw new RuntimeException(e.getMessage());
             }
         }
-       return false;
+        throw new CustomerException("customer might not exist");
     }
 
-    public boolean withdraw(Integer accountNumber, Double amount) {
+    public Account withdraw(Integer accountNumber, Double amount) {
        Account optionalAccount = accountService.getAccountByAccountNumber(accountNumber);
         if (optionalAccount != null) {
             Account account = optionalAccount;
@@ -54,10 +48,10 @@ public class TransactionService {
                 Double updatedBalance = currentBalance - amount;
                 account.setBalance(updatedBalance);
                 accountRepository.save(account);
-                return true;
+                return account;
             }
         }
-        return false;
+        return null;
     }
 
     public Map<String, Account> transfer(TransactionRequest transactionRequest){
@@ -68,7 +62,7 @@ public class TransactionService {
             updateBalances(sender, receiver, amount);
             Map<String, Account> result = new HashMap<>();
             result.put("Sender Account: ", sender);
-            result.put("reciever Account: ", receiver);
+            result.put("receiver Account: ", receiver);
             return result;
         }
         throw new CustomerException("it is not exists");

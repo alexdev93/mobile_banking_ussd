@@ -22,34 +22,31 @@ public class TransactionController {
     private TransactionRequest transactionRequest;
 
     @PostMapping("/deposit")
-    public ResponseEntity<String> deposit(@RequestBody DepositRequest depositRequest) {
+    public ResponseEntity<Account> deposit(@RequestBody DepositRequest depositRequest) {
 
-        Integer accounNumber = depositRequest.getAccountNumber();
+        Integer accountNumber = depositRequest.getAccountNumber();
         double amount = depositRequest.getAmount();
 
-        boolean depositSuccessful = transactionService.deposit(accounNumber, amount);
+        Account depositSuccessful = transactionService.deposit(accountNumber, amount);
 
-        if (depositSuccessful) {
-            return ResponseEntity.ok("Deposit successful!");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to deposit. Account not found.");
+        if (depositSuccessful != null) {
+            return ResponseEntity.ok(depositSuccessful);
         }
-
+ throw new CustomerException("Failed to deposit. Account not found.");
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(@RequestBody WithdrawalRequest withdrawalRequest) {
+    public ResponseEntity<Account> withdraw(@RequestBody WithdrawalRequest withdrawalRequest) {
 
         Integer accountNumber = withdrawalRequest.getAccountNumber();
         double amount = withdrawalRequest.getAmount();
 
-        boolean withdrawalSuccess = transactionService.withdraw(accountNumber, amount);
+        Account withdrawnAccounts = transactionService.withdraw(accountNumber, amount);
 
-        if (withdrawalSuccess) {
-            return ResponseEntity.ok("Withdrawal successful!");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to withdraw. Insufficient balance or account not found.");
+        if (withdrawnAccounts != null) {
+            return ResponseEntity.ok(withdrawnAccounts);
         }
+        throw new CustomerException("Customer might not exist");
     }
 
     @PostMapping("/transaction")
