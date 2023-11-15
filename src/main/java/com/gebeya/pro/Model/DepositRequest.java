@@ -1,13 +1,16 @@
 package com.gebeya.pro.Model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DepositRequest {
 
-    private Long accountId;
-    public Long getAccountId() {
-        return accountId;
+    private Integer accountNumber;
+    public Integer getAccountNumber() {
+        return accountNumber;
     }
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setAccountNumber(Integer accountNumber) {
+        this.accountNumber = accountNumber;
     }
     private double amount;
     public double getAmount() {

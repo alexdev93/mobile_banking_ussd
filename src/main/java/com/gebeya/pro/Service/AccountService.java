@@ -15,12 +15,8 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Optional<Account> getOneAccount(Long id) {
+    public Optional<Account> getById(Long id) {
         return accountRepository.findById(id);
-    }
-
-    public List<Account> getAccounts() {
-        return accountRepository.findAll();
     }
 
     @Transactional
@@ -40,34 +36,7 @@ public class AccountService {
         return nextAccountNumber;
     }
 
-    public boolean deposit(Long accountId, Double amount) {
-        Optional<Account> optionalAccount = accountRepository.findById(accountId);
-        if (optionalAccount.isPresent()) {
-            Account account = optionalAccount.get();
-            Double currentBalance = account.getBalance();
-            Double updatedBalance = currentBalance + amount;
-            account.setBalance(updatedBalance);
-            accountRepository.save(account);
-            return true;
-        }
-        return false;
-    }
 
-    public boolean withdraw(Long accountId, Double amount) {
-        Optional<Account> optionalAccount = accountRepository.findById(accountId);
-        if (optionalAccount.isPresent()) {
-            Account account = optionalAccount.get();
-            Double currentBalance = account.getBalance();
-
-            if (currentBalance > 0 && currentBalance > amount) {
-                Double updatedBalance = currentBalance - amount;
-                account.setBalance(updatedBalance);
-                accountRepository.save(account);
-                return true;
-            }
-        }
-        return false;
-    }
 
     public Account getAccountByAccountNumber(Integer accountNumber){
         return accountRepository.findByAccountNumber(accountNumber).orElse(null);

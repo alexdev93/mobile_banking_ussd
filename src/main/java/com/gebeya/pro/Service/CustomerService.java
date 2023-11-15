@@ -22,6 +22,12 @@ public class CustomerService {
     @Autowired
     private AccountService accountService;
 
+    public Integer setLastCif() {
+        Integer lastCif = customerRepository.getLastCif();
+        Integer nextCif = (lastCif == null) ? 12345600 : lastCif + 2;
+        return nextCif;
+    }
+
     public List<Customer> getCustomers() {
         return customerRepository.findAll();
     }
@@ -32,6 +38,7 @@ public class CustomerService {
 
     @Transactional
     public Customer createCustomer(Customer customer) {
+        customer.setCif(setLastCif());
         Address address = customer.getAddress();
         customer.setAddress(addressRepository.save(address));
         return customerRepository.save(customer);

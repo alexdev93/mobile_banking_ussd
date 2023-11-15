@@ -1,7 +1,9 @@
 package com.gebeya.pro.Model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TransactionRequest {
     @JsonProperty("sender_account_number")
     private int senderAccountNumber;

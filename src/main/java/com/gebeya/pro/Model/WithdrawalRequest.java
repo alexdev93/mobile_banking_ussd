@@ -1,10 +1,13 @@
 package com.gebeya.pro.Model;
 
-public class WithdrawalRequest {
-    private Long accountId;
+import org.springframework.stereotype.Component;
 
-    public Long getAccountId() {
-        return accountId;
+@Component
+public class WithdrawalRequest {
+    private Integer accountNumber;
+
+    public Integer getAccountNumber() {
+        return accountNumber;
     }
 
     private double amount;
