@@ -1,16 +1,12 @@
 package com.gebeya.pro.Controller;
 
-import com.gebeya.pro.Model.Account;
-import com.gebeya.pro.Model.TransactionRequest;
+import com.gebeya.pro.Model.*;
 import com.gebeya.pro.Service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.gebeya.pro.Model.DepositRequest;
-import com.gebeya.pro.Model.WithdrawalRequest;
 
 import java.util.Map;
 
@@ -22,35 +18,34 @@ public class TransactionController {
     private TransactionRequest transactionRequest;
 
     @PostMapping("/deposit")
-    public ResponseEntity<Account> deposit(@RequestBody DepositRequest depositRequest) {
+    public ResponseEntity<Transaction> deposit(@RequestBody TransactionRequest depositRequest) {
 
-        Integer accountNumber = depositRequest.getAccountNumber();
+        Integer accountNumber = depositRequest.getOwnAccountNumber();
         double amount = depositRequest.getAmount();
 
-        Account depositSuccessful = transactionService.deposit(accountNumber, amount);
-
-        if (depositSuccessful != null) {
-            return ResponseEntity.ok(depositSuccessful);
+        try{
+            Transaction transaction = transactionService.deposit(accountNumber, amount);
+            return ResponseEntity.ok(transaction);
+        }catch (Exception e){
+            throw new CustomerException(e.getMessage());
         }
- throw new CustomerException("Failed to deposit. Account not found.");
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<Account> withdraw(@RequestBody WithdrawalRequest withdrawalRequest) {
+    public ResponseEntity<Transaction> withdraw(@RequestBody TransactionRequest withdrawalRequest) {
 
-        Integer accountNumber = withdrawalRequest.getAccountNumber();
+        Integer accountNumber = withdrawalRequest.getOwnAccountNumber();
         double amount = withdrawalRequest.getAmount();
-
-        Account withdrawnAccounts = transactionService.withdraw(accountNumber, amount);
-
-        if (withdrawnAccounts != null) {
-            return ResponseEntity.ok(withdrawnAccounts);
+        try{
+            Transaction transaction = transactionService.withdraw(accountNumber, amount);
+            return ResponseEntity.ok(transaction);
+        }catch (Exception e){
+         throw new CustomerException(e.getMessage());
         }
-        throw new CustomerException("Customer might not exist");
     }
 
-    @PostMapping("/transaction")
-    public ResponseEntity<Map<String, Account>> processTransaction(@RequestBody TransactionRequest transactionRequest) {
+    @PostMapping("/transfer")
+    public ResponseEntity<Map<String, Transaction>> processTransaction(@RequestBody TransactionRequest transactionRequest) {
         return ResponseEntity.ok(transactionService.transfer(transactionRequest));
     }
 

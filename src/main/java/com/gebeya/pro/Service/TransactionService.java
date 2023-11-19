@@ -21,7 +21,26 @@ public class TransactionService {
     @Autowired
     private AccountService accountService;
 
-    public Account deposit(Integer accountNumber, Double amount) {
+    private Long generateRrn(){
+            Long lastRrn = transactionRepository.getLastRrn();
+            Long nextRrn = (lastRrn == null) ? 1110001110 : lastRrn + 1;
+            return nextRrn;
+        }
+
+    private Transaction createTransaction(Integer accountNumber, Double amount){
+        Transaction transaction = new Transaction();
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        String callerMethod = stackTraceElements[2].getMethodName();
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        transaction.setAccount(account);
+        transaction.setRrn(generateRrn());
+        transaction.setAmount(amount);
+        transaction.setTransactionType(callerMethod);
+        transaction.setResponseCode("SUCCESS");
+        return transactionRepository.save(transaction);
+    }
+
+    public Transaction deposit(Integer accountNumber, Double amount) {
         Account optionalAccount = accountService.getAccountByAccountNumber(accountNumber);
         if (optionalAccount != null) {
             try{
@@ -30,7 +49,7 @@ public class TransactionService {
                 Double updatedBalance = currentBalance + amount;
                 account.setBalance(updatedBalance);
                 accountRepository.save(account);
-                return account;
+                return createTransaction(accountNumber, amount);
             }catch (Exception e){
                 throw new RuntimeException(e.getMessage());
             }
@@ -38,7 +57,7 @@ public class TransactionService {
         throw new CustomerException("customer might not exist");
     }
 
-    public Account withdraw(Integer accountNumber, Double amount) {
+    public Transaction withdraw(Integer accountNumber, Double amount) {
        Account optionalAccount = accountService.getAccountByAccountNumber(accountNumber);
         if (optionalAccount != null) {
             Account account = optionalAccount;
@@ -48,21 +67,23 @@ public class TransactionService {
                 Double updatedBalance = currentBalance - amount;
                 account.setBalance(updatedBalance);
                 accountRepository.save(account);
-                return account;
+                return createTransaction(accountNumber, amount);
             }
         }
         return null;
     }
 
-    public Map<String, Account> transfer(TransactionRequest transactionRequest){
-        Account sender = accountService.getAccountByAccountNumber(transactionRequest.getSenderAccountNumber());
+    public Map<String, Transaction> transfer(TransactionRequest transactionRequest){
+        Account sender = accountService.getAccountByAccountNumber(transactionRequest.getOwnAccountNumber());
         Account receiver =  accountService.getAccountByAccountNumber(transactionRequest.getRecipientAccountNumber());
         Double amount = transactionRequest.getAmount();
         if (isValidTransfer(sender, receiver, amount)) {
             updateBalances(sender, receiver, amount);
-            Map<String, Account> result = new HashMap<>();
-            result.put("Sender Account: ", sender);
-            result.put("receiver Account: ", receiver);
+            Map<String, Transaction> result = new HashMap<>();
+           Transaction senderHistory = createTransaction(sender.getAccountNumber(), amount);
+           Transaction receiverHistory = createTransaction(receiver.getAccountNumber(), amount);
+            result.put("Your History: ", senderHistory);
+            result.put("receiver History: ", receiverHistory);
             return result;
         }
         throw new CustomerException("it is not exists");
@@ -82,4 +103,5 @@ public class TransactionService {
         accountRepository.save(sender);
         accountRepository.save(receiver);
     }
+
 }

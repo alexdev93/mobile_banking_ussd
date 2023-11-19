@@ -5,20 +5,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionRequest {
-    @JsonProperty("sender_account_number")
-    private int senderAccountNumber;
+    @JsonProperty("owner")
+    private int ownAccountNumber;
 
-    public int getSenderAccountNumber() {
-        return senderAccountNumber;
+    public int getOwnAccountNumber() {
+        return ownAccountNumber;
     }
 
-    @JsonProperty("recipient_account_number")
+    @JsonProperty("receiver")
     private int recipientAccountNumber;
 
     public int getRecipientAccountNumber() {
         return recipientAccountNumber;
     }
 
+    @JsonProperty("amount")
     private double amount;
 
     public double getAmount() {

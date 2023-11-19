@@ -35,7 +35,7 @@ CREATE TABLE account (
 );
 
 CREATE TABLE transaction (
-    rrn INT AUTO_INCREMENT PRIMARY KEY,
+    rrn INT,
     transaction_code VARCHAR(20),
     account_number VARCHAR(20),
     transaction_type VARCHAR(20),

@@ -8,17 +8,14 @@ import jakarta.persistence.*;
 @Table(name = "transaction")
 public class Transaction {
 
-    public Transaction(Integer rrn, Long transactionCode, Account account, String transactionType, Double amount){
-        this.rrn = rrn;
-        this.transactionCode = transactionCode;
-        this.account = account;
-        this.transactionType = transactionType;
-        this.amount = amount;
-    }
+    public Transaction(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer rrn;
+    private short transaction_id;
+
+    @Column(name = "rrn")
+    private Long rrn;
 
     @Column(name = "transaction_code")
     private Long transactionCode;
@@ -26,6 +23,7 @@ public class Transaction {
     @OneToOne
     @JoinColumn(name = "account_number", referencedColumnName = "account_number")
     private Account account;
+
 
     @Column(name = "transaction_type")
     private String transactionType;
@@ -48,11 +46,11 @@ public class Transaction {
     private LocalTime transactionDate;
 
 
-    public Integer getRrn() {
+    public Long getRrn() {
         return rrn;
     }
 
-    public void setRrn(Integer rrn) {
+    public void setRrn(Long rrn) {
         this.rrn = rrn;
     }
 
@@ -77,14 +75,6 @@ public class Transaction {
         this.transactionDate = transactionDate;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
     public Long getTransactionCode() {
         return transactionCode;
     }
@@ -96,4 +86,14 @@ public class Transaction {
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
     }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+
 }
