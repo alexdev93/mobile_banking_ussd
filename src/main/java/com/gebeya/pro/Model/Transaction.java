@@ -17,6 +17,9 @@ public class Transaction {
     @Column(name = "transaction_code")
     private String transactionCode;
 
+    @Column(name = "side")
+    private String side;
+
     @OneToOne
     @JoinColumn(name = "account_number", referencedColumnName = "account_number")
     private Account account;
@@ -85,4 +88,11 @@ public class Transaction {
     }
 
 
+    public String getSide() {
+        return side;
+    }
+
+    public void setSide(String side) {
+        this.side = side;
+    }
 }

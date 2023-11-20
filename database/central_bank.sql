@@ -44,3 +44,6 @@ CREATE TABLE transaction (
     transaction_date TIMESTAMP,
     FOREIGN KEY (account_number) REFERENCES account(account_number)
 );
+
+ALTER TABLE transaction
+ADD COLUMN side VARCHAR(10);
