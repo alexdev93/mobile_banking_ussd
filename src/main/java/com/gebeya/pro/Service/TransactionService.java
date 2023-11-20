@@ -9,6 +9,7 @@ import com.gebeya.pro.Repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -27,16 +28,15 @@ public class TransactionService {
             return nextRrn;
         }
 
-    private Transaction createTransaction(Integer accountNumber, Double amount){
+    private Transaction createTransaction(Integer accountNumber, Double amount, String transactionType, String transactionCode){
         Transaction transaction = new Transaction();
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        String callerMethod = stackTraceElements[2].getMethodName();
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         transaction.setAccount(account);
         transaction.setRrn(generateRrn());
         transaction.setAmount(amount);
-        transaction.setTransactionType(callerMethod);
+        transaction.setTransactionType(transactionType);
         transaction.setResponseCode("SUCCESS");
+        transaction.setTransactionCode(transactionCode);
         return transactionRepository.save(transaction);
     }
 
@@ -49,7 +49,7 @@ public class TransactionService {
                 Double updatedBalance = currentBalance + amount;
                 account.setBalance(updatedBalance);
                 accountRepository.save(account);
-                return createTransaction(accountNumber, amount);
+                return createTransaction(accountNumber, amount, "CREDIT", "DEP001");
             }catch (Exception e){
                 throw new RuntimeException(e.getMessage());
             }
@@ -67,7 +67,7 @@ public class TransactionService {
                 Double updatedBalance = currentBalance - amount;
                 account.setBalance(updatedBalance);
                 accountRepository.save(account);
-                return createTransaction(accountNumber, amount);
+                return createTransaction(accountNumber, -amount, "DEBIT", "WDL002");
             }
         }
         return null;
@@ -80,8 +80,8 @@ public class TransactionService {
         if (isValidTransfer(sender, receiver, amount)) {
             updateBalances(sender, receiver, amount);
             Map<String, Transaction> result = new HashMap<>();
-           Transaction senderHistory = createTransaction(sender.getAccountNumber(), amount);
-           Transaction receiverHistory = createTransaction(receiver.getAccountNumber(), amount);
+           Transaction senderHistory = withdraw(sender.getAccountNumber(), amount);
+           Transaction receiverHistory = deposit(receiver.getAccountNumber(), amount);
             result.put("Your History: ", senderHistory);
             result.put("receiver History: ", receiverHistory);
             return result;
