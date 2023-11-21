@@ -10,10 +10,7 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id")
-    private Long customerId;
-
-    @Column(name = "cif", unique = true, length = 8)
+    @Column(name = "cif")
     private int cif;
 
     @Column(name = "first_name", length = 50)
@@ -34,32 +31,15 @@ public class Customer {
     @Column(name = "dob")
     private LocalDateTime dob;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    // Constructors, getters, and setters
-
-    // Constructor
     public Customer() {
-    }
-
-    // Getters and Setters
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
     }
 
     public int getCif() {
         return cif;
-    }
-
-    public void setCif(int cif) {
-        this.cif = cif;
     }
 
     public String getFirstName() {

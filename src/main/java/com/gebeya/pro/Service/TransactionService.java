@@ -20,11 +20,6 @@ public class TransactionService {
     @Autowired
     private AccountService accountService;
 
-    private Long generateRrn(){
-            Long lastRrn = transactionRepository.getLastRrn();
-            Long nextRrn = (lastRrn == null) ? 1110001110 : lastRrn + 1;
-            return nextRrn;
-        }
 
     private Transaction createTransaction(Integer accountNumber, String side, Double amount, String transactionCode){
         Transaction transaction = new Transaction();
@@ -33,7 +28,6 @@ public class TransactionService {
         String transactionType = callingMethod.getMethodName();
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         transaction.setAccount(account);
-        transaction.setRrn(generateRrn());
         transaction.setAmount(amount);
         transaction.setSide(side);
         transaction.setTransactionType(transactionType);
@@ -82,7 +76,7 @@ public class TransactionService {
         if (isValidTransfer(sender, receiver, amount)) {
             updateBalances(sender, receiver, amount);
             Map<String, Transaction> result = new HashMap<>();
-           Transaction senderHistory = createTransaction(sender.getAccountNumber(), "SENDER", amount, "TRF003");
+           Transaction senderHistory = createTransaction(sender.getAccountNumber(), "SENDER", -amount, "TRF003");
            Transaction receiverHistory = createTransaction(sender.getAccountNumber(), "RECEIVER", amount, "TRF003");
             result.put("Your History: ", senderHistory);
             result.put("receiver History: ", receiverHistory);
@@ -98,10 +92,8 @@ public class TransactionService {
     private void updateBalances(Account sender, Account receiver, Double amount) {
         Double senderBalance = sender.getBalance();
         Double receiverBalance = receiver.getBalance();
-
         sender.setBalance(senderBalance - amount);
         receiver.setBalance(receiverBalance + amount);
-
         accountRepository.save(sender);
         accountRepository.save(receiver);
     }

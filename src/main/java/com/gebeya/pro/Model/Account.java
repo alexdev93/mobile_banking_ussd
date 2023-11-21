@@ -7,10 +7,7 @@ import jakarta.persistence.*;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
-    private Long accountId;
-
-    @Column(name = "account_number", unique = true)
+    @Column(name = "account_number")
     private Integer accountNumber;
 
     private Double balance;
@@ -21,21 +18,16 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    @OneToOne
-    @JoinColumn(name = "cif", referencedColumnName = "cif", insertable = true, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "cif", referencedColumnName = "cif")
     private Customer customer;
 
     public Account() {
     }
 
-    public Account(Customer customer, Integer accountNumber, Double d) {
+    public Account(Customer customer) {
         this.customer = customer;
-        this.accountNumber = accountNumber;
-        this.balance = d;
-    }
-
-    public Long getId() {
-        return accountId;
+        this.balance = 50.00;
     }
 
     public void setBalance(Double updatedBalance) {
@@ -50,7 +42,7 @@ public class Account {
         return accountNumber;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public int getCustomer() {
+        return customer.getCif();
     }
 }

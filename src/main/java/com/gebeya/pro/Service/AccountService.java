@@ -22,24 +22,19 @@ public class AccountService {
     @Transactional
     public void createAccount(Customer customer) {
         try {
-            Integer nextAccountNumber = maxAccNum();
-            Account account = new Account(customer, nextAccountNumber, 50.00);
+            Account account = new Account(customer);
             accountRepository.save(account);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create account: " + e.getMessage());
         }
     }
 
-    public Integer maxAccNum() {
-        Integer maxAccountNumber = accountRepository.getMaxAccountNumber();
-        Integer nextAccountNumber = (maxAccountNumber == null) ? 1000010 : maxAccountNumber + 10;
-        return nextAccountNumber;
-    }
-
-
-
     public Account getAccountByAccountNumber(Integer accountNumber){
         return accountRepository.findByAccountNumber(accountNumber).orElse(null);
+    }
+
+    public Account getByCustomer(Customer customer){
+        return accountRepository.findByCustomer(customer).orElse(null);
     }
 
 }

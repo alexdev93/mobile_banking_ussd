@@ -1,5 +1,6 @@
 package com.gebeya.pro.Service;
 
+import com.gebeya.pro.Model.Account;
 import com.gebeya.pro.Model.Address;
 import com.gebeya.pro.Model.Customer;
 import com.gebeya.pro.Repository.AddressRepository;
@@ -22,12 +23,12 @@ public class CustomerService {
     @Autowired
     private AccountService accountService;
 
-    public Integer setLastCif() {
-        Integer lastCif = customerRepository.getLastCif();
-        Integer nextCif = (lastCif == null) ? 12345600 : lastCif + 2;
-        return nextCif;
+    @Transactional
+    public Customer getCustomerByPhoneNumber(String phoneNumber){
+        return customerRepository.findByPhoneNumber(phoneNumber).orElse(null);
     }
 
+    @Transactional
     public List<Customer> getCustomers() {
         return customerRepository.findAll();
     }
@@ -38,7 +39,6 @@ public class CustomerService {
 
     @Transactional
     public Customer createCustomer(Customer customer) {
-        customer.setCif(setLastCif());
         Address address = customer.getAddress();
         customer.setAddress(addressRepository.save(address));
         return customerRepository.save(customer);
@@ -54,10 +54,12 @@ public class CustomerService {
         }
     }
 
+    @Transactional
     public void deleteColumn(Long id) {
         customerRepository.deleteById(id);
     }
 
+    @Transactional
     public Customer updateCustomer(Long id, Customer update) {
         Optional<Customer> existingCustomer = getCustomer(id);
         if (existingCustomer.isPresent()) {
@@ -70,4 +72,5 @@ public class CustomerService {
 
         throw new RuntimeException("Failed to update customer and account: ");
     }
+
 }

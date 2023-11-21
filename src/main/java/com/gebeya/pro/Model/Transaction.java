@@ -1,6 +1,6 @@
 package com.gebeya.pro.Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
@@ -8,10 +8,12 @@ import jakarta.persistence.*;
 @Table(name = "transaction")
 public class Transaction {
 
-    public Transaction(){}
+    public Transaction(){
+        this.transactionDate = LocalDateTime.now();
+    }
 
     @Id
-    @Column(name = "rrn")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rrn;
 
     @Column(name = "transaction_code")
@@ -20,7 +22,7 @@ public class Transaction {
     @Column(name = "side")
     private String side;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "account_number", referencedColumnName = "account_number")
     private Account account;
 
@@ -43,7 +45,7 @@ public class Transaction {
     private String responseCode;
 
     @Column(name = "transaction_date")
-    private LocalDate transactionDate;
+    private LocalDateTime transactionDate;
 
 
     public Long getRrn() {
@@ -79,8 +81,8 @@ public class Transaction {
         this.responseCode = responseCode;
     }
 
-    public Account getAccount() {
-        return account;
+    public Integer getAccount() {
+        return account.getAccountNumber();
     }
 
     public void setAccount(Account account) {
@@ -94,5 +96,9 @@ public class Transaction {
 
     public void setSide(String side) {
         this.side = side;
+    }
+
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
     }
 }
