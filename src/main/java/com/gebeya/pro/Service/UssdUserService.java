@@ -34,16 +34,21 @@ public class UssdUserService {
         }
         throw new CustomerException("account not found");
     }
+
     @Transactional
     public List<UssdUser> findAllUser(){
         return ussdUserRepository.findAll();
     }
+
     @Transactional
     public void deleteUserById(Long id){
         ussdUserRepository.deleteById(id);
     }
+
     @Transactional
     public Optional<UssdUser> getUserById(Long id){
         return ussdUserRepository.findById(id);
     }
+
+
 }
