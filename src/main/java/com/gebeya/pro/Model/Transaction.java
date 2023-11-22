@@ -33,6 +33,12 @@ public class Transaction {
     @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "otp")
+    private int otp;
+
+    @Column(name = "status")
+    private String status;
+
     public Double getAmount() {
         return amount;
     }
@@ -100,5 +106,21 @@ public class Transaction {
 
     public LocalDateTime getTransactionDate() {
         return transactionDate;
+    }
+
+    public int getOtp() {
+        return otp;
+    }
+
+    public void setOtp(int otp) {
+        this.otp = otp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
