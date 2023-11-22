@@ -26,4 +26,7 @@ public class TransactionRequest {
         return amount;
     }
 
+    public void setOwnAccountNumber(int ownAccountNumber) {
+        this.ownAccountNumber = ownAccountNumber;
+    }
 }

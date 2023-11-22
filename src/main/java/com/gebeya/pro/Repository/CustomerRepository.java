@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     public Optional<Customer> findByPhoneNumber(String phoneNumber);
+
+    public Customer findByCif(int cif);
 }

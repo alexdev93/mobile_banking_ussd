@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UssdUserRepository extends JpaRepository<UssdUser, Long> {
-    public Optional<UssdUser> findByPhoneNumber(String phoneNumber);
+    public UssdUser findByPhoneNumber(String phoneNumber);
 
 }

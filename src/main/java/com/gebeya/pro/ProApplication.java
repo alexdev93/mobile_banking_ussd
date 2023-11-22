@@ -5,6 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+
+@name: Alemayehu Mekonen
+@email: alemayehu.dev@gmail.com
+
+ */
+
 @RestController
 @SpringBootApplication
 @ComponentScan("com.gebeya.pro")

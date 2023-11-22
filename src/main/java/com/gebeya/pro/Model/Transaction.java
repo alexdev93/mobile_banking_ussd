@@ -10,6 +10,7 @@ public class Transaction {
 
     public Transaction(){
         this.transactionDate = LocalDateTime.now();
+        this.otp = 00;
     }
 
     @Id
@@ -25,6 +26,8 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "account_number", referencedColumnName = "account_number")
     private Account account;
+
+    public Account getAccount(){}
 
 
     @Column(name = "transaction_type")

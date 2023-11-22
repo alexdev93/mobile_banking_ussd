@@ -9,6 +9,9 @@ public class UssdUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(name = "profile")
+    private String Profile;
+
     @OneToOne
     @JoinColumn(name = "cif", referencedColumnName = "cif", insertable = true, updatable = false)
     private Customer customer;

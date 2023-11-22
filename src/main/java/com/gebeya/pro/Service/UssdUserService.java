@@ -4,6 +4,7 @@ import com.gebeya.pro.Controller.CustomerException;
 import com.gebeya.pro.Model.Account;
 import com.gebeya.pro.Model.Customer;
 import com.gebeya.pro.Model.UssdUser;
+import com.gebeya.pro.Repository.AccountRepository;
 import com.gebeya.pro.Repository.UssdUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UssdUserService {
+public class UssdUserService extends AccountService{
     @Autowired
        private CustomerService customerService;
     @Autowired

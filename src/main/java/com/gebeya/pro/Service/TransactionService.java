@@ -2,6 +2,7 @@ package com.gebeya.pro.Service;
 
 import com.gebeya.pro.Controller.CustomerException;
 import com.gebeya.pro.Model.Account;
+import com.gebeya.pro.Model.RequestMerchant;
 import com.gebeya.pro.Model.Transaction;
 import com.gebeya.pro.Model.TransactionRequest;
 import com.gebeya.pro.Repository.AccountRepository;
@@ -26,7 +27,8 @@ public class TransactionService {
 
     private Transaction createTransaction(Integer accountNumber, String side, Double amount, String transactionCode) {
         Transaction transaction = new Transaction();
-        String transactionType = determineTransactionType();
+        StackTraceElement callingMethod = Thread.currentThread().getStackTrace()[2];
+        String transactionType = callingMethod.getMethodName();
 
         if (isDepositOrWithdraw(transactionType)) {
             initializePendingTransaction(transaction);
@@ -41,11 +43,6 @@ public class TransactionService {
         transaction.setTransactionCode(transactionCode);
 
         return transactionRepository.save(transaction);
-    }
-
-    private String determineTransactionType() {
-        StackTraceElement callingMethod = Thread.currentThread().getStackTrace()[2];
-        return callingMethod.getMethodName();
     }
 
     private boolean isDepositOrWithdraw(String transactionType) {
@@ -107,6 +104,24 @@ public class TransactionService {
         return transactionRepository.findTop5ByOrderByTransactionDateDesc();
     }
 
+    public Transaction getSpecificTransaction(RequestMerchant requestMerchant, Long id, String service){
+        Account user = accountService.getAccountByAccountNumber(requestMerchant.getAccountNumber());
+        Transaction transaction = transactionRepository.findByOtpAndStatus(requestMerchant.getOtp(), "PENDING");
+        Account merchant = accountService.getAccountByAccountNumber(transaction.getAccount());
+        if (isOTPValid(transaction.getTransactionDate())){
+            if (service == "withdraw" ){
+            updateBalances(user, merchant, requestMerchant.getAmount());
+            }
+            else {
+            updateBalances(merchant, user, requestMerchant.getAmount());
+            }
+            transaction.setStatus("Completed");
+            transactionRepository.save(transaction);
+        }
+        transaction.setStatus("Completed");
+        transactionRepository.save(transaction);
+        return transaction;
+    }
 
     private boolean isValidTransfer(Account sender, Account receiver, Double amount) {
         return sender != null && receiver != null && sender.getBalance() >= amount;

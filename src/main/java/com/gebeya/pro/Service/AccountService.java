@@ -33,7 +33,7 @@ public class AccountService {
     }
 
     public Account getByCustomer(Customer customer){
-        return accountRepository.findByCustomer(customer).orElse(null);
+        return accountRepository.findByCustomer(customer);
     }
 
 }

@@ -14,6 +14,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     public Optional<Account> findByAccountNumber(Integer accountNumber);
 
-      public  Optional<Account> findByCustomer(Customer customer);
+    public  Account findByCustomer(Customer customer);
+
 
 }

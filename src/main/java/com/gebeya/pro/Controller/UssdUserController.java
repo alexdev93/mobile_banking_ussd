@@ -27,6 +27,4 @@ public class UssdUserController {
         return ussdUserService.findAllUser();
     }
 
-
-
 }
