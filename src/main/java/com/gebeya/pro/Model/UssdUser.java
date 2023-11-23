@@ -1,7 +1,11 @@
 package com.gebeya.pro.Model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "mobile_user")
 public class UssdUser {
@@ -31,51 +35,8 @@ public class UssdUser {
     @Column(name = "balance")
     private Double balance;
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getPIN() {
-        return pin;
-    }
-
-    public void setPIN(int PIN) {
-        this.pin = pin;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public int getCif() {
         return customer.getCif();
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 }

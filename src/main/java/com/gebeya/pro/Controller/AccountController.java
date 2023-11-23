@@ -12,7 +12,7 @@ import com.gebeya.pro.Model.Account;
 import com.gebeya.pro.Service.AccountService;
 
 @RestController
-@RequestMapping(path = "/accounts")
+@RequestMapping("/api/v2/accounts")
 public class AccountController {
     @Autowired
     private AccountService accountService;
@@ -23,15 +23,15 @@ public class AccountController {
         return existAcc.orElse(null);
     }
 
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<Double> queryBalance(@PathVariable Long id) {
-        Optional<Account> thisAccount = accountService.getById(id);
-        if (thisAccount.isPresent()) {
-            Account account = thisAccount.get();
-            return ResponseEntity.ok(account.getBalance());
-        }
-        throw new RuntimeException("this account did not exist");
-    }
+//    @GetMapping("/{id}/balance")
+//    public ResponseEntity<Double> queryBalance(@PathVariable Long id) {
+//        Optional<Account> thisAccount = accountService.getById(id);
+//        if (thisAccount.isPresent()) {
+//            Account account = thisAccount.get();
+//            return ResponseEntity.ok(account.getBalance());
+//        }
+//        throw new RuntimeException("this account did not exist");
+//    }
 
 
 }

@@ -2,6 +2,7 @@ package com.gebeya.pro.Controller;
 
 import com.gebeya.pro.Model.*;
 import com.gebeya.pro.Repository.CustomerRepository;
+import com.gebeya.pro.Service.AccountService;
 import com.gebeya.pro.Service.ReactiveApiService;
 import com.gebeya.pro.Service.TransactionService;
 import com.gebeya.pro.Service.UssdUserService;
@@ -14,7 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user/{id}")
+@RequestMapping("/api/v2/users")
+
 public class UserController {
     @Autowired
     private ReactiveApiService reactiveApiService;
@@ -25,26 +27,49 @@ public class UserController {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private AccountService accountService;
+
+    @PostMapping
+    public UssdUser registering(@RequestBody UssdUser ussdUser){
+        return ussdUserService.registerUser(ussdUser);
+    }
+
     @GetMapping
+    public List<UssdUser> getUsers(){
+        return ussdUserService.findAllUser();
+    }
+
+    @GetMapping("/{id}")
     public Optional<UssdUser> getUser(@PathVariable Long id) {
         return ussdUserService.getUserById(id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         ussdUserService.deleteUserById(id);
         return "delete successfully";
     }
 
-    @GetMapping("/shortStmt")
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<Double> queryBalance(@PathVariable Long id) {
+        Optional<UssdUser> thisAccount = ussdUserService.getUserById(id);
+        if (thisAccount.isPresent()) {
+            UssdUser user = thisAccount.get();
+            return ResponseEntity.ok(user.getBalance());
+        }
+        throw new RuntimeException("this account does not exist");
+    }
+
+    @GetMapping("/{id}/shortStmt")
     public List<Transaction> returnTransactions(@PathVariable Long id) {
         return transactionService.getRecentTransactions();
     }
 
-    @PostMapping("/topup/{cardAmount}")
-    public TopUp topUpApi(@PathVariable Long id, @PathVariable Long cardAmount) {
-        return reactiveApiService.topUpFetch(cardAmount);
-    }
+//    @PostMapping("{id}/topup/{cardAmount}")
+//    public TopUp topUpApi(@PathVariable Long id, @PathVariable Long cardAmount) {
+//        return reactiveApiService.topUpFetch(cardAmount);
+//    }
 
     @PostMapping("/deposit")
     public Transaction depositFromUser(@PathVariable Long id, @RequestBody TransactionRequest transactionRequest) {
@@ -84,12 +109,12 @@ public class UserController {
     return null;
     }
 
-    @PostMapping("/merchant/withdraw")
+    @PostMapping("/merchant-withdraw")
     public Transaction transactionValidatorForWithdraw(@PathVariable Long id, @RequestBody RequestMerchant requestMerchant){
         return transactionService.getSpecificTransaction(requestMerchant, id, "withdraw");
     }
 
-    @PostMapping("/merchant/deposit")
+    @PostMapping("/merchant-deposit")
     public Transaction transactionValidatorForDeposit(@PathVariable Long id, @RequestBody RequestMerchant requestMerchant){
         return transactionService.getSpecificTransaction(requestMerchant, id, "deposit");
     }

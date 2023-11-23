@@ -27,9 +27,6 @@ public class Transaction {
     @JoinColumn(name = "account_number", referencedColumnName = "account_number")
     private Account account;
 
-    public Account getAccount(){}
-
-
     @Column(name = "transaction_type")
     private String transactionType;
 

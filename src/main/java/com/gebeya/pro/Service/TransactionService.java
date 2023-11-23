@@ -1,6 +1,5 @@
 package com.gebeya.pro.Service;
 
-import com.gebeya.pro.Controller.CustomerException;
 import com.gebeya.pro.Model.Account;
 import com.gebeya.pro.Model.RequestMerchant;
 import com.gebeya.pro.Model.Transaction;
@@ -64,7 +63,7 @@ public class TransactionService {
                 throw new RuntimeException(e.getMessage());
             }
         }
-        throw new CustomerException("customer might not exist");
+        throw new RuntimeException("customer might not exist");
     }
 
     public Transaction withdraw(Integer accountNumber, Double amount) {
@@ -97,7 +96,7 @@ public class TransactionService {
             return result;
         }
 
-        throw new CustomerException("Invalid transfer");
+        throw new RuntimeException("Invalid transfer");
     }
 
     public List<Transaction> getRecentTransactions() {

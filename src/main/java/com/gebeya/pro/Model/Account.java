@@ -1,7 +1,12 @@
 package com.gebeya.pro.Model;
+
 import java.time.LocalDate;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "account")
 public class Account {
@@ -30,19 +35,19 @@ public class Account {
         this.balance = 50.00;
     }
 
-    public void setBalance(Double updatedBalance) {
-        this.balance = updatedBalance;
-    }
+//    public void setBalance(Double updatedBalance) {
+//        this.balance = updatedBalance;
+//    }
+//
+//    public Double getBalance() {
+//        return balance;
+//    }
+//
+//    public Integer getAccountNumber() {
+//        return accountNumber;
+//    }
 
-    public Double getBalance() {
-        return balance;
-    }
-
-    public Integer getAccountNumber() {
-        return accountNumber;
-    }
-
-    public int getCustomer() {
-        return customer.getCif();
-    }
+//    public int getCustomer() {
+//        return customer.getCif();
+//    }
 }

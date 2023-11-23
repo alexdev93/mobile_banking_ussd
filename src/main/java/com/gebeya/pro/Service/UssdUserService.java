@@ -1,10 +1,8 @@
 package com.gebeya.pro.Service;
 
-import com.gebeya.pro.Controller.CustomerException;
 import com.gebeya.pro.Model.Account;
 import com.gebeya.pro.Model.Customer;
 import com.gebeya.pro.Model.UssdUser;
-import com.gebeya.pro.Repository.AccountRepository;
 import com.gebeya.pro.Repository.UssdUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +21,34 @@ public class UssdUserService extends AccountService{
        private UssdUserRepository ussdUserRepository;
 
     @Transactional
-    public UssdUser registerUser(UssdUser ussdUser){
-        String phoneNUmber = ussdUser.getPhoneNumber();
-        Customer existCustomer = customerService.getCustomerByPhoneNumber(phoneNUmber);
-        Account existAccount = accountService.getByCustomer(existCustomer);
-        String poNumber = existCustomer.getPhoneNumber();
-        if (poNumber.equals(phoneNUmber) && ussdUserRepository.findByPhoneNumber(phoneNUmber) != null){
-            ussdUser.setCustomer(existCustomer);
-            ussdUser.setBalance(existAccount.getBalance());
-            return ussdUserRepository.save(ussdUser);
+    public UssdUser registerUser(UssdUser ussdUser) {
+        String phoneNumber = ussdUser.getPhoneNumber();
+
+        if (ussdUserRepository.findByPhoneNumber(phoneNumber) != null) {
+            throw new RuntimeException("User with this phone number already exists");
         }
-        throw new CustomerException("account not found");
+
+        Customer existingCustomer = customerService.getCustomerByPhoneNumber(phoneNumber);
+        if (existingCustomer == null) {
+            throw new RuntimeException("User doesn't have a bank account");
+        }
+
+        Account existingAccount = accountService.getByCustomer(existingCustomer);
+        if (existingAccount == null) {
+            throw new RuntimeException("This user doesn't have a bank account");
+        }
+
+        // Check if the phone number matches the customer's phone number
+        if (!existingCustomer.getPhoneNumber().equals(phoneNumber)) {
+            throw new RuntimeException("Mismatch between user phone number and existing customer");
+        }
+
+        ussdUser.setCustomer(existingCustomer);
+        ussdUser.setBalance(existingAccount.getBalance());
+
+        return ussdUserRepository.save(ussdUser);
     }
+
 
     @Transactional
     public List<UssdUser> findAllUser(){
