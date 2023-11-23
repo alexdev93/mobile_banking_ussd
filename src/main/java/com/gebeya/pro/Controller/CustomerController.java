@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/api/v2/customers")
 public class CustomerController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class CustomerController {
         throw new RuntimeException("this customer doesn't exist");
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public Customer createCustomer(@RequestBody Customer customer) {
         try {
             return customerService.createCustomerAndAccount(customer);
